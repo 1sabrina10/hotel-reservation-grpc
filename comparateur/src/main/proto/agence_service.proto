@@ -1,0 +1,155 @@
+syntax = "proto3";
+
+package org.example.agence;
+
+option java_multiple_files = true;
+option java_package = "org.example.agence.grpc";
+option java_outer_classname = "AgenceServiceProto";
+
+// Service d'agence
+service AgenceService {
+  // Tester l'authentification
+  rpc TestAuth(AuthRequest) returns (AuthResponse);
+
+  // Consulter les offres
+  rpc ConsulterOffres(OffreRequest) returns (OffreResponse);
+
+  // Obtenir une offre par ID
+  rpc GetOffreById(GetOffreRequest) returns (OffreAgence);
+
+  // Réserver une chambre
+  rpc ReserverChambre(ReservationRequest) returns (ReservationResponse);
+
+  // Annuler une réservation
+  rpc AnnulerReservation(AnnulerReservationRequest) returns (AnnulerReservationResponse);
+
+  // Obtenir une réservation par référence
+  rpc GetReservationByReference(GetReservationRequest) returns (ReservationResponse);
+}
+
+// Requête d'authentification
+message AuthRequest {
+  string email = 1;
+  string password = 2;
+}
+
+// Réponse d'authentification
+message AuthResponse {
+  bool auth = 1;
+}
+
+// Requête d'offres
+message OffreRequest {
+  string email = 1;
+  string password = 2;
+  int32 nb_personnes = 3;
+  string ville = 4;
+  int64 date_debut = 5;  // timestamp en millisecondes
+  int64 date_fin = 6;    // timestamp en millisecondes
+  int64 agence_id = 7;
+}
+
+// Réponse d'offres
+message OffreResponse {
+  repeated OffreAgence offres = 1;
+}
+
+// Requête pour obtenir une offre par ID
+message GetOffreRequest {
+  int64 agence_id = 1;
+  int64 offre_id = 2;
+}
+
+// Offre d'agence
+message OffreAgence {
+  int64 offre_id = 1;
+  int64 agence_id = 2;
+  ChambreDTO chambre_dto = 3;
+}
+
+// DTO de chambre
+message ChambreDTO {
+  int64 id = 1;
+  string nom_hotel = 2;
+  Adresse adresse = 3;
+  string type = 4;
+  int32 nombre_lits = 5;
+  double prix = 6;
+  double reduction = 7;
+  bytes image = 8;
+  bool has_offer = 9;
+  int32 etoiles = 10;
+  int64 date_debut = 11;  // timestamp en millisecondes
+  int64 date_fin = 12;    // timestamp en millisecondes
+  int32 nombre_nuits = 13;
+  double prix_total = 14;
+}
+
+// Adresse
+message Adresse {
+  string pays = 1;
+  string ville = 2;
+  string rue = 3;
+  string numero = 4;
+  string gps = 5;
+}
+
+// Requête de réservation
+message ReservationRequest {
+  int64 agence_id = 1;
+  int64 chambre_id = 2;
+  string nom_client = 3;
+  string prenom_client = 4;
+  string email = 5;
+  string numero_carte = 6;
+  string cvc = 7;
+  double prix_total = 8;
+  int32 nombre_nuits = 9;
+  int64 date_debut = 10;  // timestamp en millisecondes
+  int64 date_fin = 11;    // timestamp en millisecondes
+}
+
+// Réponse de réservation
+message ReservationResponse {
+  bool success = 1;
+  string message = 2;
+  ReservationDTO reservation = 3;
+}
+
+// DTO de réservation
+message ReservationDTO {
+  int64 id = 1;
+  string reference = 2;
+  int64 agence_id = 3;
+  int64 chambre_id = 4;
+  ClientDTO client = 5;
+  double prix_total = 6;
+  int32 nombre_nuits = 7;
+  int64 date_debut = 8;  // timestamp en millisecondes
+  int64 date_fin = 9;    // timestamp en millisecondes
+}
+
+// DTO de client
+message ClientDTO {
+  int64 id = 1;
+  string nom = 2;
+  string prenom = 3;
+  string email = 4;
+}
+
+// Requête pour annuler une réservation
+message AnnulerReservationRequest {
+  string reference = 1;
+}
+
+// Réponse pour annuler une réservation
+message AnnulerReservationResponse {
+  bool success = 1;
+  string message = 2;
+}
+
+// Requête pour obtenir une réservation
+message GetReservationRequest {
+  string reference = 1;
+}
+

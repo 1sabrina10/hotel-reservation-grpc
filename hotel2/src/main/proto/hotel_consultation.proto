@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package org.example.hotel;
+
+option java_multiple_files = true;
+option java_package = "org.example.hotel.grpc";
+option java_outer_classname = "HotelConsultationProto";
+
+// Service gRPC pour la consultation et réservation d'hôtel
+service HotelConsultationService {
+  rpc Authentifier(AuthRequest) returns (AuthResponse);
+  rpc ConsulterDisponibilites(DisponibiliteRequest) returns (DisponibiliteResponse);
+  rpc ReserverChambreAuto(HotelReservationRequest) returns (HotelReservationResponse);
+  rpc AnnulerReservation(HotelAnnulerReservationRequest) returns (HotelAnnulerReservationResponse);
+}
+
+// --- Messages ---
+
+message AuthRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  bool success = 1;
+}
+
+message DisponibiliteRequest {
+  int64 hotel_id = 1;
+  string email = 2;
+  string password = 3;
+  int32 nb_personnes = 4;
+  string ville = 5;
+  int64 date_debut = 6;  // timestamp en millisecondes
+  int64 date_fin = 7;
+}
+
+message DisponibiliteResponse {
+  repeated ChambreDTO chambres = 1;
+}
+
+message ChambreDTO {
+  int64 id = 1;
+  string nom_hotel = 2;
+  Adresse adresse = 3;
+  string type = 4;
+  int32 nombre_lits = 5;
+  double prix = 6;
+  bytes image = 7;
+}
+
+message Adresse {
+  string pays = 1;
+  string ville = 2;
+  string rue = 3;
+  string numero = 4;
+  string gps = 5;
+}
+
+message HotelReservationRequest {
+  int64 agence_id = 1;
+  string nom_client = 2;
+  string prenom_client = 3;
+  string email = 4;
+  string numero_carte = 5;
+  string cvc = 6;
+  double prix_total = 7;
+  int32 nombre_nuits = 8;
+  int32 nb_personnes = 9;
+  string ville = 10;
+  int64 date_debut = 11;
+  int64 date_fin = 12;
+}
+
+message HotelReservationResponse {
+  bool success = 1;
+  string message = 2;
+  HotelReservationDTO reservation = 3;
+}
+
+message HotelReservationDTO {
+  int64 id = 1;
+  string reference = 2;
+  int64 agence_id = 3;
+  int64 chambre_id = 4;
+  int64 client_id = 5;
+  double prix_total = 6;
+  int32 nombre_nuits = 7;
+  int64 date_debut = 8;
+  int64 date_fin = 9;
+}
+
+message HotelAnnulerReservationRequest {
+  string email = 1;
+  string reference = 2;
+}
+
+message HotelAnnulerReservationResponse {
+  bool success = 1;
+  string message = 2;
+}

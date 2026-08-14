@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package org.example.hotel;
+
+option java_multiple_files = true;
+option java_package = "org.example.hotel.grpc";
+option java_outer_classname = "HotelProto";
+
+service HotelConsultationService {
+  rpc ConsulterDisponibilites (DisponibiliteRequest)
+      returns (DisponibiliteResponse);
+}
+
+message DisponibiliteRequest {
+  int64 hotel_id = 1;
+  string email = 2;
+  string password = 3;
+  int32 nb_personnes = 4;
+  string ville = 5;
+  int64 date_debut = 6;
+  int64 date_fin = 7;
+}
+
+message DisponibiliteResponse {
+  repeated ChambreDTO chambres = 1;
+}
+
+message ChambreDTO {
+  int64 id = 1;
+  string nom_hotel = 2;
+  Adresse adresse = 3;
+  string type = 4;
+  int32 nombre_lits = 5;
+  double prix = 6;
+  bytes image = 7;
+}
+
+message Adresse {
+  string pays = 1;
+  string ville = 2;
+  string rue = 3;
+  string numero = 4;
+  string gps = 5;
+}
